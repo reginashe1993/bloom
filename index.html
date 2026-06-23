@@ -163,7 +163,7 @@
     /* METRICS */
     .metric-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 10px;
       margin-bottom: 1.75rem;
     }
@@ -479,6 +479,9 @@
       .todo-cols { grid-template-columns: 1fr; }
       .metric-grid { grid-template-columns: repeat(2, 1fr); }
     }
+    @media (max-width: 750px) and (min-width: 601px) {
+      .metric-grid { grid-template-columns: repeat(3, 1fr); }
+    }
   </style>
 </head>
 <body>
@@ -598,8 +601,9 @@
 
 <script>
 const PASSWORD = 'rien2024';
+const STORAGE_KEY = 'bloom-rien-state';
 
-let state = {
+const DEFAULT_STATE = {
   metrics: { impressions: 221, clicks: 4, ctr: '1.8%', position: '19.7', pixel: '1.5k' },
   history: [
     { date: 'Jun 20', impressions: 527, clicks: 19 },
@@ -608,21 +612,18 @@ let state = {
   prodHistory: [
     { date: 'Jun 20', done: 8 },
     { date: 'Jun 21', done: 11 },
-    { date: 'Jun 22', done: 8 }
+    { date: 'Jun 22', done: 8 },
+    { date: 'Jun 23', done: 3 }
   ],
   todos: {
     next: [
-      'Check Google Business Profile visibility',
-      'Add Canada keywords to collection meta descriptions',
       'Write Summer Sale blog post — Summer Melts, RIEN Remains',
-      'Create Pinterest product boards + descriptions',
-      'Backlink outreach list — Vancouver blogs'
+      'Create Pinterest product boards + SEO board descriptions'
     ],
     horizon: [
       'Meta ads reboot — after 50 purchase events',
       'Gift guide blog post',
-      'Google Search Console recheck in 2-3 weeks',
-      'Deploy Bloom to Vercel'
+      'Google Search Console recheck in 2 weeks'
     ]
   },
   todoDone: { next: [], horizon: [] },
@@ -642,24 +643,52 @@ let state = {
     },
     {
       date: 'June 23, 2026',
-      content: 'Bloom finalized & Canada SEO continued\n\nDone:\n• Bloom v5 finalized — activity log, todo auto-logging, dashboard cleanup\n• Google Business description updated — added "Soft launched in late 2025"\n• Gemini confirmed surfacing RIEN in search results\n• bloom.html exported for GitHub + Vercel deployment'
+      content: 'Bloom persistence fix & SEO continued\n\nDone:\n• Bloom rebuilt with persistent storage — data survives closing the window\n• Dashboard grid fixed — cleaner 4-column layout\n• Todos updated — removed completed and deferred items\n• Deployed Bloom to Vercel via GitHub\n• Google Business Profile public visibility confirmed\n• Canada-focused keywords added to collection page meta descriptions'
     }
   ]
 };
 
+let state = null;
 let growthChart = null, prodChart = null;
+
+// ── PERSISTENCE ──────────────────────────────────────────────────────────────
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch(e) {
+    // localStorage blocked (e.g. claude.ai artifact sandbox) — state lives in memory only
+  }
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const saved = JSON.parse(raw);
+      // Merge: keep default structure, overlay saved data
+      return Object.assign({}, DEFAULT_STATE, saved);
+    }
+  } catch(e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_STATE));
+}
+
+// ── AUTH ─────────────────────────────────────────────────────────────────────
 
 function tryUnlock() {
   const val = document.getElementById('passwordInput').value;
   if (val === PASSWORD) {
     document.getElementById('lockScreen').style.display = 'none';
     document.getElementById('mainApp').classList.add('visible');
+    state = loadState();
     initApp();
   } else {
     document.getElementById('lockError').textContent = 'incorrect password';
     document.getElementById('passwordInput').value = '';
   }
 }
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
 
 function todayStr() {
   return new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -669,6 +698,8 @@ function nowTime() {
   return new Date().toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit', hour12: false });
 }
 
+// ── INIT ──────────────────────────────────────────────────────────────────────
+
 function initApp() {
   renderMetrics();
   renderTodos();
@@ -677,6 +708,8 @@ function initApp() {
   renderGrowthChart();
   renderProdChart();
 }
+
+// ── METRICS ───────────────────────────────────────────────────────────────────
 
 function renderMetrics() {
   document.getElementById('m-impressions').textContent = Number(state.metrics.impressions).toLocaleString();
@@ -730,12 +763,16 @@ function renderProdChart() {
   });
 }
 
+// ── NAV ───────────────────────────────────────────────────────────────────────
+
 function switchView(name, btn) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('view-' + name).classList.add('active');
   btn.classList.add('active');
 }
+
+// ── MODAL ────────────────────────────────────────────────────────────────────
 
 function openModal() { document.getElementById('modal').classList.add('open'); }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
@@ -749,8 +786,11 @@ function saveMetrics() {
   state.metrics = { impressions: imp, clicks: clk, ctr: ctr.includes('%') ? ctr : ctr+'%', position: pos, pixel: pix };
   const now = new Date();
   state.history.push({ date: (now.getMonth()+1)+'/'+now.getDate(), impressions: imp, clicks: clk });
+  saveState();
   renderMetrics(); renderGrowthChart(); closeModal();
 }
+
+// ── TODOS ────────────────────────────────────────────────────────────────────
 
 function renderTodos() {
   ['next','horizon'].forEach(col => {
@@ -780,6 +820,7 @@ function toggleTodo(col, i, itemText) {
     if (actIdx !== -1) state.activities.splice(actIdx, 1);
     renderActivityLog();
   }
+  saveState();
   renderTodos();
 }
 
@@ -789,8 +830,11 @@ function addTodo(col) {
   if (!val) return;
   state.todos[col].push(val);
   input.value = '';
+  saveState();
   renderTodos();
 }
+
+// ── ACTIVITY ─────────────────────────────────────────────────────────────────
 
 function addActivity() {
   const input = document.getElementById('activity-input');
@@ -798,12 +842,14 @@ function addActivity() {
   if (!val) return;
   state.activities.push({ text: val, date: todayStr(), time: nowTime(), source: 'manual' });
   input.value = '';
+  saveState();
   renderActivityLog();
   renderMetrics();
 }
 
 function deleteActivity(idx) {
   state.activities.splice(idx, 1);
+  saveState();
   renderActivityLog();
   renderMetrics();
 }
@@ -835,6 +881,8 @@ function renderActivityLog() {
   });
 }
 
+// ── SESSIONS ──────────────────────────────────────────────────────────────────
+
 function renderSessions() {
   const el = document.getElementById('session-list');
   el.innerHTML = '';
@@ -851,6 +899,7 @@ function addSession() {
   if (!text) return;
   state.sessions.push({ date: todayStr(), content: text });
   document.getElementById('session-text').value = '';
+  saveState();
   renderSessions();
 }
 </script>
