@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bloom — RIEN Jewellery</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #fafaf9;
+      --bg2: #f4f4f2;
+      --bg3: #eeede9;
+      --border: #e0dfd9;
+      --border2: #d0cfc9;
+      --text: #1a1a18;
+      --text2: #6b6b67;
+      --text3: #9e9e99;
+      --green: #1D9E75;
+      --green-bg: rgba(29,158,117,0.08);
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    input, textarea, button {
+      font-family: inherit;
+      font-size: 13px;
+    }
+
+    input, textarea {
+      background: var(--bg);
+      border: 0.5px solid var(--border2);
+      border-radius: var(--radius);
+      padding: 8px 12px;
+      color: var(--text);
+      outline: none;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--text3);
+    }
+
+    /* LOCK */
+    .lock-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: 28px;
+    }
+
+    .lock-brand {
+      text-align: center;
+    }
+
+    .lock-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      color: var(--text3);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .lock-title {
+      font-size: 36px;
+      font-weight: 400;
+      color: var(--text);
+      letter-spacing: 0.06em;
+    }
+
+    .lock-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 220px;
+    }
+
+    .lock-form input {
+      text-align: center;
+      letter-spacing: 0.12em;
+      width: 100%;
+    }
+
+    .lock-error {
+      font-size: 12px;
+      color: #c0392b;
+      text-align: center;
+      min-height: 16px;
+    }
+
+    .lock-btn {
+      width: 100%;
+      padding: 9px;
+      background: var(--text);
+      color: var(--bg);
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+    }
+
+    .lock-btn:hover { opacity: 0.82; }
+
+    /* APP */
+    .app { display: none; max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    .app.visible { display: block; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 1.25rem;
+      border-bottom: 0.5px solid var(--border);
+      margin-bottom: 1.75rem;
+    }
+
+    .topbar-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--text3);
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .topbar-name {
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text);
+      letter-spacing: 0.05em;
+    }
+
+    .nav { display: flex; gap: 4px; flex-wrap: wrap; }
+
+    .nav-btn {
+      padding: 6px 14px;
+      font-size: 12px;
+      border: 0.5px solid var(--border2);
+      border-radius: 20px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text2);
+      letter-spacing: 0.02em;
+      transition: all 0.12s;
+    }
+
+    .nav-btn:hover { background: var(--bg2); }
+    .nav-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+    /* VIEWS */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* METRICS */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin-bottom: 1.75rem;
+    }
+
+    .metric-card {
+      background: var(--bg2);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+
+    .metric-card.highlight {
+      background: var(--bg3);
+      border: 0.5px solid var(--border2);
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: var(--text3);
+      margin-bottom: 6px;
+      letter-spacing: 0.03em;
+    }
+
+    .metric-value {
+      font-size: 24px;
+      font-weight: 400;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .metric-sub {
+      font-size: 10px;
+      color: var(--text3);
+      margin-top: 4px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text3);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      margin-top: 1.75rem;
+    }
+
+    .chart-wrap { position: relative; width: 100%; height: 200px; margin-bottom: 6px; }
+    .prod-chart-wrap { position: relative; width: 100%; height: 160px; margin-bottom: 1.5rem; }
+
+    .chart-legend {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: var(--text2);
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      display: inline-block;
+      margin-right: 5px;
+    }
+
+    .note {
+      font-size: 11px;
+      color: var(--text3);
+      font-style: italic;
+      margin-top: 4px;
+      margin-bottom: 1.5rem;
+    }
+
+    .add-data-btn {
+      font-size: 12px;
+      color: var(--text2);
+      border: 0.5px dashed var(--border2);
+      border-radius: var(--radius);
+      padding: 7px 14px;
+      cursor: pointer;
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 1rem;
+    }
+
+    .add-data-btn:hover { background: var(--bg2); }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--bg);
+      border-radius: var(--radius-lg);
+      border: 0.5px solid var(--border2);
+      padding: 1.5rem;
+      width: 300px;
+      max-width: 90vw;
+    }
+
+    .modal h3 {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .modal-fields { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.25rem; }
+    .modal-fields label { font-size: 11px; color: var(--text2); display: block; margin-bottom: 3px; }
+    .modal-fields input { width: 100%; }
+
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+    .btn-secondary {
+      padding: 7px 14px;
+      font-size: 12px;
+      border: 0.5px solid var(--border2);
+      border-radius: var(--radius);
+      cursor: pointer;
+      background: transparent;
+      color: var(--text2);
+    }
+
+    .btn-primary {
+      padding: 7px 14px;
+      font-size: 12px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    /* TODOS */
+    .todo-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+
+    .todo-col-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text3);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 10px;
+      background: var(--bg2);
+      border-radius: var(--radius);
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: var(--text);
+      cursor: pointer;
+      line-height: 1.5;
+      transition: background 0.1s;
+    }
+
+    .todo-item:hover { background: var(--bg3); }
+    .todo-item.done { opacity: 0.38; text-decoration: line-through; }
+
+    .todo-check {
+      width: 15px;
+      height: 15px;
+      border: 1px solid var(--border2);
+      border-radius: 3px;
+      flex-shrink: 0;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+
+    .todo-item.done .todo-check {
+      background: var(--text);
+      border-color: var(--text);
+      color: var(--bg);
+    }
+
+    .todo-add { display: flex; gap: 6px; margin-top: 10px; }
+    .todo-add input { flex: 1; }
+    .todo-add button {
+      padding: 6px 10px;
+      border: 0.5px solid var(--border2);
+      border-radius: var(--radius);
+      cursor: pointer;
+      background: transparent;
+      color: var(--text2);
+    }
+
+    /* ACTIVITY */
+    .activity-input-row { display: flex; gap: 8px; margin-bottom: 1.5rem; }
+    .activity-input-row input { flex: 1; }
+    .activity-input-row button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      background: var(--text);
+      color: var(--bg);
+      white-space: nowrap;
+    }
+
+    .activity-group { margin-bottom: 1.75rem; }
+
+    .activity-group-date {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      padding-bottom: 7px;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .activity-entry {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .activity-entry:last-child { border-bottom: none; }
+
+    .activity-time {
+      font-size: 11px;
+      color: var(--text3);
+      white-space: nowrap;
+      min-width: 44px;
+      margin-top: 2px;
+    }
+
+    .activity-text {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .activity-tag {
+      font-size: 10px;
+      color: var(--text3);
+      background: var(--bg3);
+      border-radius: 3px;
+      padding: 1px 5px;
+      margin-left: 6px;
+      white-space: nowrap;
+    }
+
+    .activity-delete {
+      font-size: 11px;
+      color: var(--text3);
+      cursor: pointer;
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+
+    .activity-delete:hover { background: var(--bg3); color: var(--text); }
+
+    /* SESSIONS */
+    .session-add { margin-bottom: 1.5rem; }
+    .session-add textarea {
+      width: 100%;
+      height: 120px;
+      line-height: 1.6;
+      resize: vertical;
+      margin-bottom: 8px;
+    }
+
+    .session-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .session-card {
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+    }
+
+    .session-date {
+      font-size: 11px;
+      color: var(--text3);
+      margin-bottom: 6px;
+    }
+
+    .session-content {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .empty-state {
+      font-size: 13px;
+      color: var(--text3);
+      text-align: center;
+      padding: 2.5rem 0;
+    }
+
+    @media (max-width: 600px) {
+      .todo-cols { grid-template-columns: 1fr; }
+      .metric-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOCK -->
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-brand">
+    <div class="lock-eyebrow">for RIEN jewellery</div>
+    <div class="lock-title">bloom</div>
+  </div>
+  <div class="lock-form">
+    <input type="password" id="passwordInput" placeholder="enter password" onkeydown="if(event.key==='Enter')tryUnlock()" />
+    <div class="lock-error" id="lockError"></div>
+    <button class="lock-btn" onclick="tryUnlock()">enter</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="mainApp">
+  <div class="topbar">
+    <div>
+      <div class="topbar-eyebrow">for RIEN jewellery</div>
+      <div class="topbar-name">bloom</div>
+    </div>
+    <div class="nav">
+      <button class="nav-btn active" onclick="switchView('dashboard',this)">dashboard</button>
+      <button class="nav-btn" onclick="switchView('activity',this)">activity</button>
+      <button class="nav-btn" onclick="switchView('todos',this)">todos</button>
+      <button class="nav-btn" onclick="switchView('sessions',this)">sessions</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="view active" id="view-dashboard">
+    <div class="metric-grid">
+      <div class="metric-card"><div class="metric-label">impressions</div><div class="metric-value" id="m-impressions">221</div><div class="metric-sub">search console · 28d</div></div>
+      <div class="metric-card"><div class="metric-label">clicks</div><div class="metric-value" id="m-clicks">4</div><div class="metric-sub">search console · 28d</div></div>
+      <div class="metric-card"><div class="metric-label">CTR</div><div class="metric-value" id="m-ctr">1.8%</div><div class="metric-sub">search console · 28d</div></div>
+      <div class="metric-card"><div class="metric-label">avg position</div><div class="metric-value" id="m-position">19.7</div><div class="metric-sub">search console · 28d</div></div>
+      <div class="metric-card"><div class="metric-label">pixel events</div><div class="metric-value" id="m-pixel">1.5k</div><div class="metric-sub">meta · 28 days</div></div>
+      <div class="metric-card highlight"><div class="metric-label">activities today</div><div class="metric-value" id="m-act-today">0</div><div class="metric-sub">logged today</div></div>
+      <div class="metric-card highlight"><div class="metric-label">total activities</div><div class="metric-value" id="m-act-total">0</div><div class="metric-sub">all time</div></div>
+    </div>
+
+    <button class="add-data-btn" onclick="openModal()">+ update metrics</button>
+
+    <div class="section-title">impressions & clicks</div>
+    <div class="chart-legend">
+      <span><span class="legend-dot" style="background:#888780;"></span>impressions</span>
+      <span><span class="legend-dot" style="background:#1D9E75;"></span>clicks</span>
+    </div>
+    <div class="chart-wrap"><canvas id="growthChart"></canvas></div>
+    <div class="note">Search Console has a 2–3 day delay. Jun 22 numbers will rise as data catches up.</div>
+
+    <div class="section-title">productivity — tasks completed per session</div>
+    <div class="prod-chart-wrap"><canvas id="prodChart"></canvas></div>
+  </div>
+
+  <!-- ACTIVITY -->
+  <div class="view" id="view-activity">
+    <div class="activity-input-row">
+      <input type="text" id="activity-input" placeholder="log an activity manually…" onkeydown="if(event.key==='Enter')addActivity()" />
+      <button onclick="addActivity()">+ log</button>
+    </div>
+    <div id="activity-log-list"></div>
+  </div>
+
+  <!-- TODOS -->
+  <div class="view" id="view-todos">
+    <div class="todo-cols">
+      <div>
+        <div class="todo-col-title">next session</div>
+        <div id="next-todos"></div>
+        <div class="todo-add">
+          <input type="text" id="next-input" placeholder="add item…" onkeydown="if(event.key==='Enter')addTodo('next')" />
+          <button onclick="addTodo('next')">+</button>
+        </div>
+      </div>
+      <div>
+        <div class="todo-col-title">horizon</div>
+        <div id="horizon-todos"></div>
+        <div class="todo-add">
+          <input type="text" id="horizon-input" placeholder="add item…" onkeydown="if(event.key==='Enter')addTodo('horizon')" />
+          <button onclick="addTodo('horizon')">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SESSIONS -->
+  <div class="view" id="view-sessions">
+    <div class="session-add">
+      <textarea id="session-text" placeholder="paste session summary here…"></textarea>
+      <button class="btn-primary" onclick="addSession()">save session</button>
+    </div>
+    <div class="session-list" id="session-list"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3>update metrics</h3>
+    <div class="modal-fields">
+      <div><label>impressions</label><input type="number" id="f-impressions" /></div>
+      <div><label>clicks</label><input type="number" id="f-clicks" /></div>
+      <div><label>CTR (%)</label><input type="text" id="f-ctr" /></div>
+      <div><label>avg position</label><input type="text" id="f-position" /></div>
+      <div><label>pixel events</label><input type="text" id="f-pixel" /></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">cancel</button>
+      <button class="btn-primary" onclick="saveMetrics()">save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PASSWORD = 'rien2024';
+
+let state = {
+  metrics: { impressions: 221, clicks: 4, ctr: '1.8%', position: '19.7', pixel: '1.5k' },
+  history: [
+    { date: 'Jun 20', impressions: 527, clicks: 19 },
+    { date: 'Jun 22', impressions: 221, clicks: 4 }
+  ],
+  prodHistory: [
+    { date: 'Jun 20', done: 8 },
+    { date: 'Jun 21', done: 11 },
+    { date: 'Jun 22', done: 8 }
+  ],
+  todos: {
+    next: [
+      'Check Google Business Profile visibility',
+      'Add Canada keywords to collection meta descriptions',
+      'Write Summer Sale blog post — Summer Melts, RIEN Remains',
+      'Create Pinterest product boards + descriptions',
+      'Backlink outreach list — Vancouver blogs'
+    ],
+    horizon: [
+      'Meta ads reboot — after 50 purchase events',
+      'Gift guide blog post',
+      'Google Search Console recheck in 2-3 weeks',
+      'Deploy Bloom to Vercel'
+    ]
+  },
+  todoDone: { next: [], horizon: [] },
+  activities: [],
+  sessions: [
+    {
+      date: 'June 20, 2026',
+      content: 'Schema & SEO foundations\n\nDone:\n• Organisation + Product + Merchant + Breadcrumbs + FAQ schema in theme.liquid and product-information.liquid\n• Logo URL fixed, logo alt text done\n• Google metafields (Age Group: adult, Condition: new) on all 16 products\n• All 16 product titles rewritten with 925 silver + 18K gold vermeil + style keywords\n• All 16 meta descriptions with demi-fine + nickel-free + hypoallergenic + Vancouver\n• All product image alt texts done\n• Homepage hero subheading rewritten\n• Sitemap resubmitted to Google Search Console\n\nSearch Console: 527 impressions · 19 clicks · 3.6% CTR · position 14.2\nTop queries: serenity pendant (24 imp), what is an aura ring (12 imp), klyra (7 imp)'
+    },
+    {
+      date: 'June 21, 2026',
+      content: 'Blog posts, Pinterest & Meta setup\n\nDone:\n• Blog post: "Why We Only Work With the Best"\n• Blog post: "Our Story"\n• Blog post: "What Does RIEN Mean?"\n• Blog post: "How to Care for Your RIEN Jewellery"\n• Aura Ring description updated for SEO\n• Collection page titles + meta descriptions — Rings, Earrings, Necklaces, Bracelets\n• Blog card CSS — removed gray border, added soft shadow\n• Pinterest business account created — bio written, catalog connected\n• Meta Pixel properly installed on Shopify\n• Ad account moved into RIEN business portfolio\n• Data sharing set to Maximum\n• rienjewellery.ca and account.rienjewellery.ca added to Meta allowlist'
+    },
+    {
+      date: 'June 22, 2026',
+      content: 'Google Business Profile & Canada SEO\n\nDone:\n• Google Business Profile created, verified, and live\n• Service area set — Canada + major cities\n• Business description written and published (soft launched in late 2025)\n• Product photos and logo uploaded\n• Business hours live\n• Pinterest catalog approved\n• Care blog post published\n• Summer Sale blog post drafted — Summer Melts, RIEN Remains (25% off sitewide)\n• Bloom dashboard built\n\nSearch Console (28d): 221 impressions · 4 clicks · 1.8% CTR · position 19.7'
+    },
+    {
+      date: 'June 23, 2026',
+      content: 'Bloom finalized & Canada SEO continued\n\nDone:\n• Bloom v5 finalized — activity log, todo auto-logging, dashboard cleanup\n• Google Business description updated — added "Soft launched in late 2025"\n• Gemini confirmed surfacing RIEN in search results\n• bloom.html exported for GitHub + Vercel deployment'
+    }
+  ]
+};
+
+let growthChart = null, prodChart = null;
+
+function tryUnlock() {
+  const val = document.getElementById('passwordInput').value;
+  if (val === PASSWORD) {
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('mainApp').classList.add('visible');
+    initApp();
+  } else {
+    document.getElementById('lockError').textContent = 'incorrect password';
+    document.getElementById('passwordInput').value = '';
+  }
+}
+
+function todayStr() {
+  return new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function nowTime() {
+  return new Date().toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit', hour12: false });
+}
+
+function initApp() {
+  renderMetrics();
+  renderTodos();
+  renderSessions();
+  renderActivityLog();
+  renderGrowthChart();
+  renderProdChart();
+}
+
+function renderMetrics() {
+  document.getElementById('m-impressions').textContent = Number(state.metrics.impressions).toLocaleString();
+  document.getElementById('m-clicks').textContent = state.metrics.clicks;
+  document.getElementById('m-ctr').textContent = state.metrics.ctr;
+  document.getElementById('m-position').textContent = state.metrics.position;
+  document.getElementById('m-pixel').textContent = state.metrics.pixel;
+  const td = todayStr();
+  document.getElementById('m-act-today').textContent = state.activities.filter(a => a.date === td).length;
+  document.getElementById('m-act-total').textContent = state.activities.length;
+}
+
+function renderGrowthChart() {
+  if (growthChart) growthChart.destroy();
+  growthChart = new Chart(document.getElementById('growthChart'), {
+    type: 'line',
+    data: {
+      labels: state.history.map(h => h.date),
+      datasets: [
+        { label: 'Impressions', data: state.history.map(h => h.impressions), borderColor: '#888780', backgroundColor: 'rgba(136,135,128,0.08)', tension: 0.3, pointRadius: 4, borderWidth: 1.5 },
+        { label: 'Clicks', data: state.history.map(h => h.clicks), borderColor: '#1D9E75', backgroundColor: 'rgba(29,158,117,0.08)', tension: 0.3, pointRadius: 4, borderWidth: 1.5, borderDash: [4,3] }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#888780' } },
+        y: { grid: { color: 'rgba(136,135,128,0.12)' }, ticks: { font: { size: 11 }, color: '#888780' } }
+      }
+    }
+  });
+}
+
+function renderProdChart() {
+  if (prodChart) prodChart.destroy();
+  prodChart = new Chart(document.getElementById('prodChart'), {
+    type: 'bar',
+    data: {
+      labels: state.prodHistory.map(h => h.date),
+      datasets: [{ data: state.prodHistory.map(h => h.done), backgroundColor: 'rgba(29,158,117,0.12)', borderColor: '#1D9E75', borderWidth: 1, borderRadius: 4 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#888780' } },
+        y: { beginAtZero: true, grid: { color: 'rgba(136,135,128,0.12)' }, ticks: { font: { size: 11 }, color: '#888780', stepSize: 1 } }
+      }
+    }
+  });
+}
+
+function switchView(name, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+function openModal() { document.getElementById('modal').classList.add('open'); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+function saveMetrics() {
+  const imp = parseInt(document.getElementById('f-impressions').value) || state.metrics.impressions;
+  const clk = parseInt(document.getElementById('f-clicks').value) || state.metrics.clicks;
+  const ctr = document.getElementById('f-ctr').value || state.metrics.ctr;
+  const pos = document.getElementById('f-position').value || state.metrics.position;
+  const pix = document.getElementById('f-pixel').value || state.metrics.pixel;
+  state.metrics = { impressions: imp, clicks: clk, ctr: ctr.includes('%') ? ctr : ctr+'%', position: pos, pixel: pix };
+  const now = new Date();
+  state.history.push({ date: (now.getMonth()+1)+'/'+now.getDate(), impressions: imp, clicks: clk });
+  renderMetrics(); renderGrowthChart(); closeModal();
+}
+
+function renderTodos() {
+  ['next','horizon'].forEach(col => {
+    const el = document.getElementById(col+'-todos');
+    el.innerHTML = '';
+    state.todos[col].forEach((item, i) => {
+      const done = state.todoDone[col].includes(i);
+      const div = document.createElement('div');
+      div.className = 'todo-item' + (done ? ' done' : '');
+      div.innerHTML = `<div class="todo-check">${done ? '✓' : ''}</div><span>${item}</span>`;
+      div.onclick = () => toggleTodo(col, i, item);
+      el.appendChild(div);
+    });
+  });
+  renderMetrics();
+}
+
+function toggleTodo(col, i, itemText) {
+  const idx = state.todoDone[col].indexOf(i);
+  if (idx === -1) {
+    state.todoDone[col].push(i);
+    state.activities.push({ text: itemText, date: todayStr(), time: nowTime(), source: 'todo' });
+    renderActivityLog();
+  } else {
+    state.todoDone[col].splice(idx, 1);
+    const actIdx = state.activities.findIndex(a => a.text === itemText && a.source === 'todo');
+    if (actIdx !== -1) state.activities.splice(actIdx, 1);
+    renderActivityLog();
+  }
+  renderTodos();
+}
+
+function addTodo(col) {
+  const input = document.getElementById(col+'-input');
+  const val = input.value.trim();
+  if (!val) return;
+  state.todos[col].push(val);
+  input.value = '';
+  renderTodos();
+}
+
+function addActivity() {
+  const input = document.getElementById('activity-input');
+  const val = input.value.trim();
+  if (!val) return;
+  state.activities.push({ text: val, date: todayStr(), time: nowTime(), source: 'manual' });
+  input.value = '';
+  renderActivityLog();
+  renderMetrics();
+}
+
+function deleteActivity(idx) {
+  state.activities.splice(idx, 1);
+  renderActivityLog();
+  renderMetrics();
+}
+
+function renderActivityLog() {
+  const el = document.getElementById('activity-log-list');
+  if (state.activities.length === 0) {
+    el.innerHTML = '<div class="empty-state">No activities yet. Check off todos or log manually.</div>';
+    return;
+  }
+  const grouped = {};
+  state.activities.forEach((a, i) => {
+    if (!grouped[a.date]) grouped[a.date] = [];
+    grouped[a.date].push({ ...a, idx: i });
+  });
+  el.innerHTML = '';
+  Object.keys(grouped).reverse().forEach(date => {
+    const entries = grouped[date];
+    const group = document.createElement('div');
+    group.className = 'activity-group';
+    group.innerHTML = `<div class="activity-group-date">${date} · ${entries.length} ${entries.length === 1 ? 'activity' : 'activities'}</div>`;
+    [...entries].reverse().forEach(a => {
+      const row = document.createElement('div');
+      row.className = 'activity-entry';
+      row.innerHTML = `<div class="activity-time">${a.time}</div><div class="activity-text">${a.text}<span class="activity-tag">${a.source}</span></div><div class="activity-delete" onclick="deleteActivity(${a.idx})">✕</div>`;
+      group.appendChild(row);
+    });
+    el.appendChild(group);
+  });
+}
+
+function renderSessions() {
+  const el = document.getElementById('session-list');
+  el.innerHTML = '';
+  [...state.sessions].reverse().forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'session-card';
+    div.innerHTML = `<div class="session-date">${s.date}</div><div class="session-content">${s.content}</div>`;
+    el.appendChild(div);
+  });
+}
+
+function addSession() {
+  const text = document.getElementById('session-text').value.trim();
+  if (!text) return;
+  state.sessions.push({ date: todayStr(), content: text });
+  document.getElementById('session-text').value = '';
+  renderSessions();
+}
+</script>
+</body>
+</html>
