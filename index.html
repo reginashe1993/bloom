@@ -30,10 +30,7 @@
       min-height: 100vh;
     }
 
-    input, textarea, button {
-      font-family: inherit;
-      font-size: 13px;
-    }
+    input, textarea, button { font-family: inherit; font-size: 13px; }
 
     input, textarea {
       background: var(--bg);
@@ -44,9 +41,7 @@
       outline: none;
     }
 
-    input:focus, textarea:focus {
-      border-color: var(--text3);
-    }
+    input:focus, textarea:focus { border-color: var(--text3); }
 
     /* LOCK */
     .lock-screen {
@@ -58,57 +53,19 @@
       gap: 28px;
     }
 
-    .lock-brand {
-      text-align: center;
-    }
+    .lock-brand { text-align: center; }
+    .lock-eyebrow { font-size: 11px; letter-spacing: 0.22em; color: var(--text3); text-transform: uppercase; margin-bottom: 6px; }
+    .lock-title { font-size: 36px; font-weight: 400; color: var(--text); letter-spacing: 0.06em; }
 
-    .lock-eyebrow {
-      font-size: 11px;
-      letter-spacing: 0.22em;
-      color: var(--text3);
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-
-    .lock-title {
-      font-size: 36px;
-      font-weight: 400;
-      color: var(--text);
-      letter-spacing: 0.06em;
-    }
-
-    .lock-form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 220px;
-    }
-
-    .lock-form input {
-      text-align: center;
-      letter-spacing: 0.12em;
-      width: 100%;
-    }
-
-    .lock-error {
-      font-size: 12px;
-      color: #c0392b;
-      text-align: center;
-      min-height: 16px;
-    }
-
+    .lock-form { display: flex; flex-direction: column; gap: 10px; width: 220px; }
+    .lock-form input { text-align: center; letter-spacing: 0.12em; width: 100%; }
+    .lock-error { font-size: 12px; color: #c0392b; text-align: center; min-height: 16px; }
     .lock-btn {
-      width: 100%;
-      padding: 9px;
-      background: var(--text);
-      color: var(--bg);
-      border: none;
-      border-radius: var(--radius);
-      cursor: pointer;
-      font-size: 13px;
-      letter-spacing: 0.05em;
+      width: 100%; padding: 9px;
+      background: var(--text); color: var(--bg);
+      border: none; border-radius: var(--radius);
+      cursor: pointer; font-size: 13px; letter-spacing: 0.05em;
     }
-
     .lock-btn:hover { opacity: 0.82; }
 
     /* APP */
@@ -116,43 +73,20 @@
     .app.visible { display: block; }
 
     .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-bottom: 1.25rem;
-      border-bottom: 0.5px solid var(--border);
-      margin-bottom: 1.75rem;
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 1.25rem; border-bottom: 0.5px solid var(--border); margin-bottom: 1.75rem;
     }
 
-    .topbar-eyebrow {
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      color: var(--text3);
-      text-transform: uppercase;
-      margin-bottom: 3px;
-    }
-
-    .topbar-name {
-      font-size: 22px;
-      font-weight: 400;
-      color: var(--text);
-      letter-spacing: 0.05em;
-    }
+    .topbar-eyebrow { font-size: 10px; letter-spacing: 0.2em; color: var(--text3); text-transform: uppercase; margin-bottom: 3px; }
+    .topbar-name { font-size: 22px; font-weight: 400; color: var(--text); letter-spacing: 0.05em; }
 
     .nav { display: flex; gap: 4px; flex-wrap: wrap; }
-
     .nav-btn {
-      padding: 6px 14px;
-      font-size: 12px;
-      border: 0.5px solid var(--border2);
-      border-radius: 20px;
-      cursor: pointer;
-      background: transparent;
-      color: var(--text2);
-      letter-spacing: 0.02em;
-      transition: all 0.12s;
+      padding: 6px 14px; font-size: 12px;
+      border: 0.5px solid var(--border2); border-radius: 20px;
+      cursor: pointer; background: transparent; color: var(--text2);
+      letter-spacing: 0.02em; transition: all 0.12s;
     }
-
     .nav-btn:hover { background: var(--bg2); }
     .nav-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
 
@@ -162,318 +96,183 @@
 
     /* METRICS */
     .metric-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-bottom: 1.75rem;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 10px; margin-bottom: 1.75rem;
     }
-
-    .metric-card {
-      background: var(--bg2);
-      border-radius: var(--radius);
-      padding: 1rem;
-    }
-
-    .metric-card.highlight {
-      background: var(--bg3);
-      border: 0.5px solid var(--border2);
-    }
-
-    .metric-label {
-      font-size: 11px;
-      color: var(--text3);
-      margin-bottom: 6px;
-      letter-spacing: 0.03em;
-    }
-
-    .metric-value {
-      font-size: 24px;
-      font-weight: 400;
-      color: var(--text);
-      letter-spacing: -0.01em;
-    }
-
-    .metric-sub {
-      font-size: 10px;
-      color: var(--text3);
-      margin-top: 4px;
-    }
+    .metric-card { background: var(--bg2); border-radius: var(--radius); padding: 1rem; }
+    .metric-card.highlight { background: var(--bg3); border: 0.5px solid var(--border2); }
+    .metric-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; letter-spacing: 0.03em; }
+    .metric-value { font-size: 24px; font-weight: 400; color: var(--text); letter-spacing: -0.01em; }
+    .metric-sub { font-size: 10px; color: var(--text3); margin-top: 4px; }
 
     .section-title {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text3);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-      margin-top: 1.75rem;
+      font-size: 11px; font-weight: 500; color: var(--text3);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 1rem; margin-top: 1.75rem;
     }
 
     .chart-wrap { position: relative; width: 100%; height: 200px; margin-bottom: 6px; }
     .prod-chart-wrap { position: relative; width: 100%; height: 160px; margin-bottom: 1.5rem; }
 
-    .chart-legend {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 10px;
-      font-size: 12px;
-      color: var(--text2);
-    }
+    .chart-legend { display: flex; gap: 16px; margin-bottom: 10px; font-size: 12px; color: var(--text2); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: 5px; }
 
-    .legend-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 2px;
-      display: inline-block;
-      margin-right: 5px;
-    }
-
-    .note {
-      font-size: 11px;
-      color: var(--text3);
-      font-style: italic;
-      margin-top: 4px;
-      margin-bottom: 1.5rem;
-    }
+    .note { font-size: 11px; color: var(--text3); font-style: italic; margin-top: 4px; margin-bottom: 1.5rem; }
 
     .add-data-btn {
-      font-size: 12px;
-      color: var(--text2);
-      border: 0.5px dashed var(--border2);
-      border-radius: var(--radius);
-      padding: 7px 14px;
-      cursor: pointer;
-      background: transparent;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 1rem;
+      font-size: 12px; color: var(--text2);
+      border: 0.5px dashed var(--border2); border-radius: var(--radius);
+      padding: 7px 14px; cursor: pointer; background: transparent;
+      display: inline-flex; align-items: center; gap: 6px; margin-bottom: 1rem;
     }
-
     .add-data-btn:hover { background: var(--bg2); }
 
     /* MODAL */
     .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.35);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.35); z-index: 100;
+      align-items: center; justify-content: center;
     }
-
     .modal-overlay.open { display: flex; }
-
     .modal {
-      background: var(--bg);
-      border-radius: var(--radius-lg);
-      border: 0.5px solid var(--border2);
-      padding: 1.5rem;
-      width: 300px;
-      max-width: 90vw;
+      background: var(--bg); border-radius: var(--radius-lg);
+      border: 0.5px solid var(--border2); padding: 1.5rem;
+      width: 300px; max-width: 90vw;
     }
-
-    .modal h3 {
-      font-size: 15px;
-      font-weight: 500;
-      margin-bottom: 1rem;
-    }
-
+    .modal h3 { font-size: 15px; font-weight: 500; margin-bottom: 1rem; }
     .modal-fields { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.25rem; }
     .modal-fields label { font-size: 11px; color: var(--text2); display: block; margin-bottom: 3px; }
     .modal-fields input { width: 100%; }
-
     .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
 
     .btn-secondary {
-      padding: 7px 14px;
-      font-size: 12px;
-      border: 0.5px solid var(--border2);
-      border-radius: var(--radius);
-      cursor: pointer;
-      background: transparent;
-      color: var(--text2);
+      padding: 7px 14px; font-size: 12px;
+      border: 0.5px solid var(--border2); border-radius: var(--radius);
+      cursor: pointer; background: transparent; color: var(--text2);
     }
-
     .btn-primary {
-      padding: 7px 14px;
-      font-size: 12px;
-      border: none;
-      border-radius: var(--radius);
-      cursor: pointer;
-      background: var(--text);
-      color: var(--bg);
+      padding: 7px 14px; font-size: 12px;
+      border: none; border-radius: var(--radius);
+      cursor: pointer; background: var(--text); color: var(--bg);
     }
 
     /* TODOS */
     .todo-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
 
     .todo-col-title {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text3);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
+      font-size: 11px; font-weight: 600; color: var(--text3);
+      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px;
     }
 
     .todo-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      padding: 8px 10px;
-      background: var(--bg2);
-      border-radius: var(--radius);
-      margin-bottom: 6px;
-      font-size: 13px;
-      color: var(--text);
-      cursor: pointer;
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 8px 10px; background: var(--bg2);
+      border-radius: var(--radius); margin-bottom: 6px;
+      font-size: 13px; color: var(--text);
       line-height: 1.5;
-      transition: background 0.1s;
     }
-
-    .todo-item:hover { background: var(--bg3); }
-    .todo-item.done { opacity: 0.38; text-decoration: line-through; }
 
     .todo-check {
-      width: 15px;
-      height: 15px;
-      border: 1px solid var(--border2);
-      border-radius: 3px;
-      flex-shrink: 0;
-      margin-top: 1px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
+      width: 15px; height: 15px; border: 1px solid var(--border2);
+      border-radius: 3px; flex-shrink: 0; margin-top: 1px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; cursor: pointer; transition: all 0.1s;
     }
+    .todo-check:hover { border-color: var(--text3); background: var(--bg3); }
 
-    .todo-item.done .todo-check {
-      background: var(--text);
-      border-color: var(--text);
-      color: var(--bg);
+    .todo-item-text { flex: 1; }
+
+    /* action buttons inside todo items */
+    .todo-actions { display: flex; gap: 4px; flex-shrink: 0; opacity: 0; transition: opacity 0.1s; }
+    .todo-item:hover .todo-actions { opacity: 1; }
+
+    .todo-action-btn {
+      font-size: 10px; padding: 2px 6px; border-radius: 3px;
+      border: 0.5px solid var(--border2); background: transparent;
+      color: var(--text3); cursor: pointer; white-space: nowrap;
     }
+    .todo-action-btn:hover { background: var(--bg3); color: var(--text2); }
+    .todo-action-btn.move { color: var(--green); border-color: rgba(29,158,117,0.3); }
+    .todo-action-btn.move:hover { background: var(--green-bg); }
+
+    /* Done section */
+    .done-section { margin-top: 1.5rem; }
+    .done-section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .done-section-title {
+      font-size: 10px; font-weight: 600; color: var(--text3);
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .done-clear-btn {
+      font-size: 10px; color: var(--text3);
+      border: none; background: transparent; cursor: pointer;
+      padding: 2px 4px; border-radius: 3px;
+    }
+    .done-clear-btn:hover { background: var(--bg3); color: var(--text2); }
+
+    .done-item {
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 7px 10px; background: var(--bg2);
+      border-radius: var(--radius); margin-bottom: 4px;
+      font-size: 12px; color: var(--text3);
+      text-decoration: line-through; opacity: 0.55;
+      line-height: 1.5;
+    }
+    .done-check {
+      width: 14px; height: 14px; background: var(--border2);
+      border-radius: 3px; flex-shrink: 0; margin-top: 1px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; color: var(--text3); cursor: pointer;
+    }
+    .done-check:hover { background: var(--bg3); }
 
     .todo-add { display: flex; gap: 6px; margin-top: 10px; }
     .todo-add input { flex: 1; }
     .todo-add button {
-      padding: 6px 10px;
-      border: 0.5px solid var(--border2);
-      border-radius: var(--radius);
-      cursor: pointer;
-      background: transparent;
-      color: var(--text2);
+      padding: 6px 10px; border: 0.5px solid var(--border2);
+      border-radius: var(--radius); cursor: pointer;
+      background: transparent; color: var(--text2);
     }
 
     /* ACTIVITY */
     .activity-input-row { display: flex; gap: 8px; margin-bottom: 1.5rem; }
     .activity-input-row input { flex: 1; }
     .activity-input-row button {
-      padding: 8px 16px;
-      border: none;
-      border-radius: var(--radius);
-      cursor: pointer;
-      background: var(--text);
-      color: var(--bg);
-      white-space: nowrap;
+      padding: 8px 16px; border: none; border-radius: var(--radius);
+      cursor: pointer; background: var(--text); color: var(--bg); white-space: nowrap;
     }
 
     .activity-group { margin-bottom: 1.75rem; }
-
     .activity-group-date {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text3);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-      padding-bottom: 7px;
-      border-bottom: 0.5px solid var(--border);
+      font-size: 11px; font-weight: 600; color: var(--text3);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 8px; padding-bottom: 7px; border-bottom: 0.5px solid var(--border);
     }
-
     .activity-entry {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 8px 0;
-      border-bottom: 0.5px solid var(--border);
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 8px 0; border-bottom: 0.5px solid var(--border);
     }
-
     .activity-entry:last-child { border-bottom: none; }
-
-    .activity-time {
-      font-size: 11px;
-      color: var(--text3);
-      white-space: nowrap;
-      min-width: 44px;
-      margin-top: 2px;
-    }
-
-    .activity-text {
-      font-size: 13px;
-      color: var(--text);
-      line-height: 1.5;
-      flex: 1;
-    }
-
+    .activity-time { font-size: 11px; color: var(--text3); white-space: nowrap; min-width: 44px; margin-top: 2px; }
+    .activity-text { font-size: 13px; color: var(--text); line-height: 1.5; flex: 1; }
     .activity-tag {
-      font-size: 10px;
-      color: var(--text3);
-      background: var(--bg3);
-      border-radius: 3px;
-      padding: 1px 5px;
-      margin-left: 6px;
-      white-space: nowrap;
+      font-size: 10px; color: var(--text3); background: var(--bg3);
+      border-radius: 3px; padding: 1px 5px; margin-left: 6px; white-space: nowrap;
     }
-
-    .activity-delete {
-      font-size: 11px;
-      color: var(--text3);
-      cursor: pointer;
-      padding: 2px 5px;
-      border-radius: 3px;
-    }
-
+    .activity-delete { font-size: 11px; color: var(--text3); cursor: pointer; padding: 2px 5px; border-radius: 3px; }
     .activity-delete:hover { background: var(--bg3); color: var(--text); }
 
     /* SESSIONS */
     .session-add { margin-bottom: 1.5rem; }
-    .session-add textarea {
-      width: 100%;
-      height: 120px;
-      line-height: 1.6;
-      resize: vertical;
-      margin-bottom: 8px;
-    }
-
+    .session-add textarea { width: 100%; height: 120px; line-height: 1.6; resize: vertical; margin-bottom: 8px; }
     .session-list { display: flex; flex-direction: column; gap: 10px; }
+    .session-card { border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; }
+    .session-date { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
+    .session-content { font-size: 13px; color: var(--text); line-height: 1.7; white-space: pre-wrap; }
 
-    .session-card {
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1rem 1.25rem;
-    }
-
-    .session-date {
-      font-size: 11px;
-      color: var(--text3);
-      margin-bottom: 6px;
-    }
-
-    .session-content {
-      font-size: 13px;
-      color: var(--text);
-      line-height: 1.7;
-      white-space: pre-wrap;
-    }
-
-    .empty-state {
-      font-size: 13px;
-      color: var(--text3);
-      text-align: center;
-      padding: 2.5rem 0;
-    }
+    .empty-state { font-size: 13px; color: var(--text3); text-align: center; padding: 2.5rem 0; }
 
     @media (max-width: 600px) {
       .todo-cols { grid-template-columns: 1fr; }
@@ -552,6 +351,7 @@
   <!-- TODOS -->
   <div class="view" id="view-todos">
     <div class="todo-cols">
+      <!-- NEXT SESSION -->
       <div>
         <div class="todo-col-title">next session</div>
         <div id="next-todos"></div>
@@ -559,13 +359,29 @@
           <input type="text" id="next-input" placeholder="add item…" onkeydown="if(event.key==='Enter')addTodo('next')" />
           <button onclick="addTodo('next')">+</button>
         </div>
+        <div class="done-section" id="next-done-section" style="display:none;">
+          <div class="done-section-header">
+            <span class="done-section-title">done</span>
+            <button class="done-clear-btn" onclick="clearDone('next')">clear all</button>
+          </div>
+          <div id="next-done-list"></div>
+        </div>
       </div>
+
+      <!-- HORIZON -->
       <div>
         <div class="todo-col-title">horizon</div>
         <div id="horizon-todos"></div>
         <div class="todo-add">
           <input type="text" id="horizon-input" placeholder="add item…" onkeydown="if(event.key==='Enter')addTodo('horizon')" />
           <button onclick="addTodo('horizon')">+</button>
+        </div>
+        <div class="done-section" id="horizon-done-section" style="display:none;">
+          <div class="done-section-header">
+            <span class="done-section-title">done</span>
+            <button class="done-clear-btn" onclick="clearDone('horizon')">clear all</button>
+          </div>
+          <div id="horizon-done-list"></div>
         </div>
       </div>
     </div>
@@ -601,7 +417,7 @@
 
 <script>
 const PASSWORD = 'rien2024';
-const STORAGE_KEY = 'bloom-rien-state';
+const STORAGE_KEY = 'bloom-rien-state-v7';
 
 const DEFAULT_STATE = {
   metrics: { impressions: 221, clicks: 4, ctr: '1.8%', position: '19.7', pixel: '1.5k' },
@@ -615,6 +431,7 @@ const DEFAULT_STATE = {
     { date: 'Jun 22', done: 8 },
     { date: 'Jun 23', done: 3 }
   ],
+  // todos: arrays of strings
   todos: {
     next: [
       'Write Summer Sale blog post — Summer Melts, RIEN Remains',
@@ -626,7 +443,11 @@ const DEFAULT_STATE = {
       'Google Search Console recheck in 2 weeks'
     ]
   },
-  todoDone: { next: [], horizon: [] },
+  // done: arrays of strings (completed items)
+  todoDone: {
+    next: [],
+    horizon: []
+  },
   activities: [],
   sessions: [
     {
@@ -654,11 +475,7 @@ let growthChart = null, prodChart = null;
 // ── PERSISTENCE ──────────────────────────────────────────────────────────────
 
 function saveState() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch(e) {
-    // localStorage blocked (e.g. claude.ai artifact sandbox) — state lives in memory only
-  }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
 }
 
 function loadState() {
@@ -666,8 +483,23 @@ function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const saved = JSON.parse(raw);
-      // Merge: keep default structure, overlay saved data
-      return Object.assign({}, DEFAULT_STATE, saved);
+      // Deep merge to ensure all keys exist
+      const merged = JSON.parse(JSON.stringify(DEFAULT_STATE));
+      if (saved.metrics) merged.metrics = saved.metrics;
+      if (saved.history) merged.history = saved.history;
+      if (saved.prodHistory) merged.prodHistory = saved.prodHistory;
+      if (saved.todos) {
+        if (saved.todos.next) merged.todos.next = saved.todos.next;
+        if (saved.todos.horizon) merged.todos.horizon = saved.todos.horizon;
+      }
+      if (saved.todoDone) {
+        // todoDone is now arrays of strings, not indices
+        if (Array.isArray(saved.todoDone.next)) merged.todoDone.next = saved.todoDone.next;
+        if (Array.isArray(saved.todoDone.horizon)) merged.todoDone.horizon = saved.todoDone.horizon;
+      }
+      if (saved.activities) merged.activities = saved.activities;
+      if (saved.sessions) merged.sessions = saved.sessions;
+      return merged;
     }
   } catch(e) {}
   return JSON.parse(JSON.stringify(DEFAULT_STATE));
@@ -693,7 +525,6 @@ function tryUnlock() {
 function todayStr() {
   return new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
 }
-
 function nowTime() {
   return new Date().toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit', hour12: false });
 }
@@ -772,7 +603,7 @@ function switchView(name, btn) {
   btn.classList.add('active');
 }
 
-// ── MODAL ────────────────────────────────────────────────────────────────────
+// ── MODAL ─────────────────────────────────────────────────────────────────────
 
 function openModal() { document.getElementById('modal').classList.add('open'); }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
@@ -790,42 +621,141 @@ function saveMetrics() {
   renderMetrics(); renderGrowthChart(); closeModal();
 }
 
-// ── TODOS ────────────────────────────────────────────────────────────────────
+// ── TODOS ─────────────────────────────────────────────────────────────────────
+// todoDone[col] = array of item text strings (completed items, stored separately from active)
 
 function renderTodos() {
-  ['next','horizon'].forEach(col => {
-    const el = document.getElementById(col+'-todos');
-    el.innerHTML = '';
+  ['next', 'horizon'].forEach(col => {
+    const activeEl = document.getElementById(col + '-todos');
+    const doneEl = document.getElementById(col + '-done-list');
+    const doneSection = document.getElementById(col + '-done-section');
+    activeEl.innerHTML = '';
+    doneEl.innerHTML = '';
+
+    // Active items
     state.todos[col].forEach((item, i) => {
-      const done = state.todoDone[col].includes(i);
       const div = document.createElement('div');
-      div.className = 'todo-item' + (done ? ' done' : '');
-      div.innerHTML = `<div class="todo-check">${done ? '✓' : ''}</div><span>${item}</span>`;
-      div.onclick = () => toggleTodo(col, i, item);
-      el.appendChild(div);
+      div.className = 'todo-item';
+
+      // Check button
+      const check = document.createElement('div');
+      check.className = 'todo-check';
+      check.title = 'mark done';
+      check.onclick = () => completeTodo(col, i);
+
+      const textSpan = document.createElement('span');
+      textSpan.className = 'todo-item-text';
+      textSpan.textContent = item;
+
+      const actions = document.createElement('div');
+      actions.className = 'todo-actions';
+
+      // "→ next" button only for horizon items
+      if (col === 'horizon') {
+        const moveBtn = document.createElement('button');
+        moveBtn.className = 'todo-action-btn move';
+        moveBtn.textContent = '→ next session';
+        moveBtn.title = 'move to next session';
+        moveBtn.onclick = (e) => { e.stopPropagation(); moveToNext(i); };
+        actions.appendChild(moveBtn);
+      }
+
+      // Delete button
+      const delBtn = document.createElement('button');
+      delBtn.className = 'todo-action-btn';
+      delBtn.textContent = '✕';
+      delBtn.title = 'delete';
+      delBtn.onclick = (e) => { e.stopPropagation(); deleteTodo(col, i); };
+      actions.appendChild(delBtn);
+
+      div.appendChild(check);
+      div.appendChild(textSpan);
+      div.appendChild(actions);
+      activeEl.appendChild(div);
     });
+
+    // Done items
+    const doneItems = state.todoDone[col];
+    if (doneItems.length > 0) {
+      doneSection.style.display = 'block';
+      doneItems.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'done-item';
+
+        const check = document.createElement('div');
+        check.className = 'done-check';
+        check.title = 'restore';
+        check.textContent = '✓';
+        check.onclick = () => restoreTodo(col, i);
+
+        const textSpan = document.createElement('span');
+        textSpan.textContent = item;
+
+        div.appendChild(check);
+        div.appendChild(textSpan);
+        doneEl.appendChild(div);
+      });
+    } else {
+      doneSection.style.display = 'none';
+    }
   });
+
   renderMetrics();
 }
 
-function toggleTodo(col, i, itemText) {
-  const idx = state.todoDone[col].indexOf(i);
-  if (idx === -1) {
-    state.todoDone[col].push(i);
-    state.activities.push({ text: itemText, date: todayStr(), time: nowTime(), source: 'todo' });
-    renderActivityLog();
-  } else {
-    state.todoDone[col].splice(idx, 1);
-    const actIdx = state.activities.findIndex(a => a.text === itemText && a.source === 'todo');
-    if (actIdx !== -1) state.activities.splice(actIdx, 1);
-    renderActivityLog();
-  }
+function completeTodo(col, idx) {
+  const item = state.todos[col][idx];
+  // Remove from active
+  state.todos[col].splice(idx, 1);
+  // Add to done list
+  state.todoDone[col].push(item);
+  // Log activity
+  state.activities.push({ text: item, date: todayStr(), time: nowTime(), source: 'todo' });
+  saveState();
+  renderTodos();
+  renderActivityLog();
+  renderMetrics();
+}
+
+function restoreTodo(col, doneIdx) {
+  const item = state.todoDone[col][doneIdx];
+  // Remove from done
+  state.todoDone[col].splice(doneIdx, 1);
+  // Put back at top of active
+  state.todos[col].unshift(item);
+  // Remove from activity log
+  const actIdx = state.activities.findIndex(a => a.text === item && a.source === 'todo');
+  if (actIdx !== -1) state.activities.splice(actIdx, 1);
+  saveState();
+  renderTodos();
+  renderActivityLog();
+  renderMetrics();
+}
+
+function deleteTodo(col, idx) {
+  state.todos[col].splice(idx, 1);
+  saveState();
+  renderTodos();
+}
+
+function clearDone(col) {
+  state.todoDone[col] = [];
+  saveState();
+  renderTodos();
+}
+
+function moveToNext(horizonIdx) {
+  const item = state.todos.horizon[horizonIdx];
+  // Remove from horizon
+  state.todos.horizon.splice(horizonIdx, 1);
+  // Add to top of next session
+  state.todos.next.unshift(item);
   saveState();
   renderTodos();
 }
 
 function addTodo(col) {
-  const input = document.getElementById(col+'-input');
+  const input = document.getElementById(col + '-input');
   const val = input.value.trim();
   if (!val) return;
   state.todos[col].push(val);
@@ -834,7 +764,7 @@ function addTodo(col) {
   renderTodos();
 }
 
-// ── ACTIVITY ─────────────────────────────────────────────────────────────────
+// ── ACTIVITY ──────────────────────────────────────────────────────────────────
 
 function addActivity() {
   const input = document.getElementById('activity-input');
