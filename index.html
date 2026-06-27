@@ -711,10 +711,27 @@ function completeTodo(col, idx) {
   state.todoDone[col].push(item);
   // Log activity
   state.activities.push({ text: item, date: todayStr(), time: nowTime(), source: 'todo' });
+  // Update prodHistory for today
+  updateProdHistory();
   saveState();
   renderTodos();
   renderActivityLog();
   renderMetrics();
+  renderProdChart();
+}
+
+function updateProdHistory() {
+  const today = new Date();
+  const label = today.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); // e.g. "Jun 26"
+  const existing = state.prodHistory.find(h => h.date === label);
+  // Count all todos completed today across both cols
+  const td = todayStr();
+  const countToday = state.activities.filter(a => a.date === td && a.source === 'todo').length + 1; // +1 for the one just added
+  if (existing) {
+    existing.done = countToday;
+  } else {
+    state.prodHistory.push({ date: label, done: countToday });
+  }
 }
 
 function restoreTodo(col, doneIdx) {
