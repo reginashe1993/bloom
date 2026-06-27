@@ -725,7 +725,7 @@ function backfillProdHistory() {
   // Group todo activities by date and update prodHistory
   const grouped = {};
   state.activities.forEach(a => {
-    if (a.source === 'todo') {
+    if (a.source) {
       grouped[a.date] = (grouped[a.date] || 0) + 1;
     }
   });
@@ -748,7 +748,7 @@ function updateProdHistory() {
   const existing = state.prodHistory.find(h => h.date === label);
   // Count all todos completed today across both cols
   const td = todayStr();
-  const countToday = state.activities.filter(a => a.date === td && a.source === 'todo').length;
+  const countToday = state.activities.filter(a => a.date === td).length;
   if (existing) {
     existing.done = countToday;
   } else {
@@ -811,9 +811,11 @@ function addActivity() {
   if (!val) return;
   state.activities.push({ text: val, date: todayStr(), time: nowTime(), source: 'manual' });
   input.value = '';
+  updateProdHistory();
   saveState();
   renderActivityLog();
   renderMetrics();
+  renderProdChart();
 }
 
 function deleteActivity(idx) {
