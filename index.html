@@ -532,6 +532,7 @@ function nowTime() {
 // ── INIT ──────────────────────────────────────────────────────────────────────
 
 function initApp() {
+  backfillProdHistory();
   renderMetrics();
   renderTodos();
   renderSessions();
@@ -720,13 +721,34 @@ function completeTodo(col, idx) {
   renderProdChart();
 }
 
+function backfillProdHistory() {
+  // Group todo activities by date and update prodHistory
+  const grouped = {};
+  state.activities.forEach(a => {
+    if (a.source === 'todo') {
+      grouped[a.date] = (grouped[a.date] || 0) + 1;
+    }
+  });
+  Object.entries(grouped).forEach(([dateStr, count]) => {
+    // Convert "June 26, 2026" -> "Jun 26"
+    const d = new Date(dateStr);
+    const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const existing = state.prodHistory.find(h => h.date === label);
+    if (existing) {
+      existing.done = Math.max(existing.done, count);
+    } else {
+      state.prodHistory.push({ date: label, done: count });
+    }
+  });
+}
+
 function updateProdHistory() {
   const today = new Date();
   const label = today.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); // e.g. "Jun 26"
   const existing = state.prodHistory.find(h => h.date === label);
   // Count all todos completed today across both cols
   const td = todayStr();
-  const countToday = state.activities.filter(a => a.date === td && a.source === 'todo').length + 1; // +1 for the one just added
+  const countToday = state.activities.filter(a => a.date === td && a.source === 'todo').length;
   if (existing) {
     existing.done = countToday;
   } else {
