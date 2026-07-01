@@ -111,7 +111,7 @@
       margin-bottom: 1rem; margin-top: 1.75rem;
     }
 
-    .chart-wrap { position: relative; width: 100%; height: 200px; margin-bottom: 6px; }
+    .chart-wrap { position: relative; width: 100%; height: 240px; margin-bottom: 6px; }
     .prod-chart-wrap { position: relative; width: 100%; height: 160px; margin-bottom: 1.5rem; }
 
     .chart-legend { display: flex; gap: 16px; margin-bottom: 10px; font-size: 12px; color: var(--text2); }
@@ -281,6 +281,24 @@
     @media (max-width: 750px) and (min-width: 601px) {
       .metric-grid { grid-template-columns: repeat(3, 1fr); }
     }
+
+    /* HISTORY MANAGER */
+    .history-manager { margin-top: 0.5rem; margin-bottom: 1.5rem; }
+    .history-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 6px 0; border-bottom: 0.5px solid var(--border);
+      font-size: 12px; color: var(--text2);
+    }
+    .history-row:last-child { border-bottom: none; }
+    .history-row-date { min-width: 52px; color: var(--text3); font-size: 11px; }
+    .history-row-vals { flex: 1; display: flex; gap: 12px; flex-wrap: wrap; }
+    .history-row-val { font-size: 11px; color: var(--text2); }
+    .history-row-val span { color: var(--text3); }
+    .history-del {
+      font-size: 11px; color: var(--text3); cursor: pointer;
+      padding: 2px 6px; border-radius: 3px; border: none; background: transparent;
+    }
+    .history-del:hover { background: var(--bg3); color: #c0392b; }
   </style>
 </head>
 <body>
@@ -561,19 +579,93 @@ function renderGrowthChart() {
     data: {
       labels: state.history.map(h => h.date),
       datasets: [
-        { label: 'Impressions', data: state.history.map(h => h.impressions), borderColor: '#888780', backgroundColor: 'rgba(136,135,128,0.08)', tension: 0.3, pointRadius: 4, borderWidth: 1.5 },
-        { label: 'Clicks', data: state.history.map(h => h.clicks), borderColor: '#1D9E75', backgroundColor: 'rgba(29,158,117,0.08)', tension: 0.3, pointRadius: 4, borderWidth: 1.5, borderDash: [4,3] }
+        {
+          label: 'Impressions', yAxisID: 'yLeft',
+          data: state.history.map(h => h.impressions),
+          borderColor: '#888780', backgroundColor: 'rgba(136,135,128,0.06)',
+          tension: 0.3, pointRadius: 4, borderWidth: 1.5
+        },
+        {
+          label: 'Clicks', yAxisID: 'yLeft',
+          data: state.history.map(h => h.clicks),
+          borderColor: '#1D9E75', backgroundColor: 'rgba(29,158,117,0.06)',
+          tension: 0.3, pointRadius: 4, borderWidth: 1.5, borderDash: [4,3]
+        },
+        {
+          label: 'CTR %', yAxisID: 'yRight',
+          data: state.history.map(h => h.ctr != null ? h.ctr : null),
+          borderColor: '#6B8CBA', backgroundColor: 'rgba(107,140,186,0.06)',
+          tension: 0.3, pointRadius: 4, borderWidth: 1.5, borderDash: [2,3]
+        },
+        {
+          label: 'Position', yAxisID: 'yRight',
+          data: state.history.map(h => h.position != null ? h.position : null),
+          borderColor: '#C4956A', backgroundColor: 'rgba(196,149,106,0.06)',
+          tension: 0.3, pointRadius: 4, borderWidth: 1.5, borderDash: [6,3]
+        }
       ]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
+      plugins: { legend: { display: false }, tooltip: {
+        callbacks: {
+          label: ctx => {
+            const label = ctx.dataset.label;
+            const val = ctx.parsed.y;
+            if (label === 'CTR %') return ' CTR: ' + val + '%';
+            if (label === 'Position') return ' Position: ' + val;
+            return ' ' + label + ': ' + val;
+          }
+        }
+      }},
       scales: {
         x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#888780' } },
-        y: { grid: { color: 'rgba(136,135,128,0.12)' }, ticks: { font: { size: 11 }, color: '#888780' } }
+        yLeft: {
+          type: 'linear', position: 'left',
+          grid: { color: 'rgba(136,135,128,0.12)' },
+          ticks: { font: { size: 11 }, color: '#888780' }
+        },
+        yRight: {
+          type: 'linear', position: 'right',
+          grid: { display: false },
+          ticks: { font: { size: 11 }, color: '#888780' }
+        }
       }
     }
   });
+  renderHistoryManager();
+}
+
+function renderHistoryManager() {
+  const el = document.getElementById('history-manager');
+  if (!el) return;
+  el.innerHTML = '';
+  if (state.history.length === 0) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--text3);">No history entries yet.</div>';
+    return;
+  }
+  [...state.history].reverse().forEach((h, revIdx) => {
+    const idx = state.history.length - 1 - revIdx;
+    const row = document.createElement('div');
+    row.className = 'history-row';
+    row.innerHTML = `
+      <div class="history-row-date">${h.date}</div>
+      <div class="history-row-vals">
+        <div class="history-row-val"><span>imp </span>${h.impressions}</div>
+        <div class="history-row-val"><span>clk </span>${h.clicks}</div>
+        ${h.ctr != null ? `<div class="history-row-val"><span>CTR </span>${h.ctr}%</div>` : ''}
+        ${h.position != null ? `<div class="history-row-val"><span>pos </span>${h.position}</div>` : ''}
+      </div>
+      <button class="history-del" onclick="deleteHistoryEntry(${idx})">✕</button>
+    `;
+    el.appendChild(row);
+  });
+}
+
+function deleteHistoryEntry(idx) {
+  state.history.splice(idx, 1);
+  saveState();
+  renderGrowthChart();
 }
 
 function renderProdChart() {
@@ -617,7 +709,9 @@ function saveMetrics() {
   const pix = document.getElementById('f-pixel').value || state.metrics.pixel;
   state.metrics = { impressions: imp, clicks: clk, ctr: ctr.includes('%') ? ctr : ctr+'%', position: pos, pixel: pix };
   const now = new Date();
-  state.history.push({ date: (now.getMonth()+1)+'/'+now.getDate(), impressions: imp, clicks: clk });
+  const ctrNum = parseFloat(ctr.replace('%','')) || 0;
+  const posNum = parseFloat(pos) || 0;
+  state.history.push({ date: (now.getMonth()+1)+'/'+now.getDate(), impressions: imp, clicks: clk, ctr: ctrNum, position: posNum });
   saveState();
   renderMetrics(); renderGrowthChart(); closeModal();
 }
