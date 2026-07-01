@@ -299,6 +299,20 @@
       padding: 2px 6px; border-radius: 3px; border: none; background: transparent;
     }
     .history-del:hover { background: var(--bg3); color: #c0392b; }
+    .history-row.editing { background: var(--bg2); border-radius: var(--radius); }
+    .history-inline-edit {
+      padding: 10px 12px 12px;
+      background: var(--bg2);
+      border-radius: 0 0 var(--radius) var(--radius);
+      margin-bottom: 4px;
+    }
+    .history-edit-fields {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;
+    }
+    .history-edit-fields > div { display: flex; flex-direction: column; gap: 3px; }
+    .history-edit-fields label { font-size: 10px; color: var(--text3); }
+    .history-edit-fields input { width: 80px; font-size: 12px; padding: 5px 8px; }
+    .history-edit-actions { display: flex; gap: 6px; justify-content: flex-end; }
   </style>
 </head>
 <body>
@@ -652,18 +666,87 @@ function renderHistoryManager() {
     const idx = state.history.length - 1 - revIdx;
     const row = document.createElement('div');
     row.className = 'history-row';
-    row.innerHTML = `
-      <div class="history-row-date">${h.date}</div>
-      <div class="history-row-vals">
-        <div class="history-row-val"><span>imp </span>${h.impressions}</div>
-        <div class="history-row-val"><span>clk </span>${h.clicks}</div>
-        ${h.ctr != null ? `<div class="history-row-val"><span>CTR </span>${h.ctr}%</div>` : ''}
-        ${h.position != null ? `<div class="history-row-val"><span>pos </span>${h.position}</div>` : ''}
-      </div>
-      <button class="history-del" onclick="deleteHistoryEntry(${idx})">✕</button>
-    `;
+    row.id = 'hrow-' + idx;
+
+    const dateEl = document.createElement('div');
+    dateEl.className = 'history-row-date';
+    dateEl.textContent = h.date;
+
+    const vals = document.createElement('div');
+    vals.className = 'history-row-vals';
+    vals.innerHTML =
+      '<div class="history-row-val"><span>imp </span>' + h.impressions + '</div>' +
+      '<div class="history-row-val"><span>clk </span>' + h.clicks + '</div>' +
+      (h.ctr != null ? '<div class="history-row-val"><span>CTR </span>' + h.ctr + '%</div>' : '<div class="history-row-val" style="color:var(--text3);font-style:italic;">no CTR</div>') +
+      (h.position != null ? '<div class="history-row-val"><span>pos </span>' + h.position + '</div>' : '<div class="history-row-val" style="color:var(--text3);font-style:italic;">no pos</div>');
+
+    const actions = document.createElement('div');
+    actions.style.display = 'flex';
+    actions.style.gap = '4px';
+
+    const editBtn = document.createElement('button');
+    editBtn.className = 'history-del';
+    editBtn.textContent = 'edit';
+    editBtn.style.color = 'var(--text2)';
+    editBtn.onclick = () => openHistoryEdit(idx);
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'history-del';
+    delBtn.textContent = '✕';
+    delBtn.onclick = () => deleteHistoryEntry(idx);
+
+    actions.appendChild(editBtn);
+    actions.appendChild(delBtn);
+    row.appendChild(dateEl);
+    row.appendChild(vals);
+    row.appendChild(actions);
     el.appendChild(row);
   });
+}
+
+function openHistoryEdit(idx) {
+  // Close any open inline editors first
+  document.querySelectorAll('.history-inline-edit').forEach(e => e.remove());
+  document.querySelectorAll('.history-row.editing').forEach(r => r.classList.remove('editing'));
+
+  const h = state.history[idx];
+  const row = document.getElementById('hrow-' + idx);
+  row.classList.add('editing');
+
+  const editor = document.createElement('div');
+  editor.className = 'history-inline-edit';
+  editor.innerHTML =
+    '<div class="history-edit-fields">' +
+      '<div><label>imp</label><input type="number" id="he-imp" value="' + h.impressions + '"></div>' +
+      '<div><label>clk</label><input type="number" id="he-clk" value="' + h.clicks + '"></div>' +
+      '<div><label>CTR %</label><input type="text" id="he-ctr" value="' + (h.ctr != null ? h.ctr : '') + '" placeholder="e.g. 1.8"></div>' +
+      '<div><label>pos</label><input type="text" id="he-pos" value="' + (h.position != null ? h.position : '') + '" placeholder="e.g. 19.7"></div>' +
+    '</div>' +
+    '<div class="history-edit-actions">' +
+      '<button class="btn-secondary" onclick="cancelHistoryEdit()">cancel</button>' +
+      '<button class="btn-primary" onclick="saveHistoryEdit(' + idx + ')">save</button>' +
+    '</div>';
+
+  row.insertAdjacentElement('afterend', editor);
+  document.getElementById('he-imp').focus();
+}
+
+function cancelHistoryEdit() {
+  document.querySelectorAll('.history-inline-edit').forEach(e => e.remove());
+  document.querySelectorAll('.history-row.editing').forEach(r => r.classList.remove('editing'));
+}
+
+function saveHistoryEdit(idx) {
+  const imp = parseInt(document.getElementById('he-imp').value) || state.history[idx].impressions;
+  const clk = parseInt(document.getElementById('he-clk').value) || state.history[idx].clicks;
+  const ctrRaw = document.getElementById('he-ctr').value.trim();
+  const posRaw = document.getElementById('he-pos').value.trim();
+  const ctr = ctrRaw !== '' ? parseFloat(ctrRaw.replace('%','')) : null;
+  const pos = posRaw !== '' ? parseFloat(posRaw) : null;
+  state.history[idx] = { ...state.history[idx], impressions: imp, clicks: clk, ctr, position: pos };
+  cancelHistoryEdit();
+  saveState();
+  renderGrowthChart();
 }
 
 function deleteHistoryEntry(idx) {
